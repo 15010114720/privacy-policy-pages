@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D 粒子爱心 - 献给挚爱</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+        
+        canvas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .text-overlay {
+            position: absolute;
+            z-index: 2;
+            color: rgba(255, 192, 203, 0.8);
+            text-align: center;
+            pointer-events: none;
+            mix-blend-mode: screen;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            font-weight: normal;
+        }
+
+        p {
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+        }
+        
+        /* 音乐控制按钮 */
+        #musicBtn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        
+        #musicBtn:hover {
+            background: rgba(255, 105, 180, 0.3);
+            transform: rotate(180deg);
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap');
+    </style>
+</head>
+<body>
+
+    <div class="text-overlay">
+        <h1>黎江 & 蔡艳</h1>
+        <p>斯人若彩虹，遇上方知有</p>
+    </div>
+
+    <button id="musicBtn" title="播放/暂停音乐">🎵</button>
+    
+    <audio id="bgMusic" loop>
+        <!-- 莫文蔚 - 这世界那么多人 -->
+        <source src="https://music.163.com/song/media/outer/url?id=1842025914.mp3" type="audio/mpeg">
+    </audio>
+
+    <canvas id="heartCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('heartCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height;
+        let particles = [];
+        
+        // 核心参数
+        const PARTICLE_COUNT = 1500; // 粒子数量
+        const HEART_SIZE = 15;       // 爱心大小系数
+        const HEART_COLOR = "#ea80b0"; // 爱心基础颜色
+        
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            initParticles();
+        }
+        
+        // 爱心公式 (3D 坐标生成)
+        // 使用经典的 3D 爱心参数方程或者在 2D 爱心面上增加厚度
+        function getHeartPoint(t) {
+            // 2D 基础形状
+            // x = 16sin^3(t)
+            // y = 13cos(t) - 5cos(2t) - 2cos(3t) - cos(4t)
+            // 为了 3D 效果，我们在 Z 轴上做随机分布，并让爱心有“体积”
+            
+            // 这里使用一个稍微复杂的生成算法来模拟蓬松的 3D 粒子爱心
+            
+            // 随机角度 t 在 0 到 2PI 之间
+            let u = t; 
+            
+            // 基础 2D 坐标
+            let x = 16 * Math.pow(Math.sin(u), 3);
+            let y = -(13 * Math.cos(u) - 5 * Math.cos(2 * u) - 2 * Math.cos(3 * u) - Math.cos(4 * u));
+            
+            // 增加一点随机性让它看起来像云雾/粒子团
+            // 这里的 z 坐标基于 x, y 的距离，让它中间厚边缘薄
+            let z = (Math.random() - 0.5) * 10; 
+            
+            return { x, y, z };
+        }
+
+        // 粒子类
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            
+            reset() {
+                // 随机生成在爱心轨迹上
+                let t = Math.random() * Math.PI * 2;
+                let pos = getHeartPoint(t);
+                
+                // 增加内部填充的随机点
+                // 通过拒绝采样或者简单的随机偏移来填充内部
+                let len = Math.random();
+                // 让粒子更多集中在边缘，产生轮廓感
+                len = Math.pow(len, 0.3); 
+                
+                this.ox = pos.x * len; // 原始目标位置 x
+                this.oy = pos.y * len; // 原始目标位置 y
+                this.oz = pos.z * len; // 原始目标位置 z
+                
+                this.x = this.ox;
+                this.y = this.oy;
+                this.z = this.oz;
+                
+                this.vx = (Math.random() - 0.5) * 2;
+                this.vy = (Math.random() - 0.5) * 2;
+                this.vz = (Math.random() - 0.5) * 2;
+                
+                this.size = Math.random() * 2 + 0.5;
+                this.color = HEART_COLOR;
+                
+                // 闪烁参数
+                this.flashSpeed = Math.random() * 0.05 + 0.01;
+                this.flashState = Math.random() * Math.PI;
+            }
+            
+            update(time, beat) {
+                // 3D 旋转
+                // 绕 Y 轴缓慢旋转
+                let angle = time * 0.001;
+                let ca = Math.cos(angle);
+                let sa = Math.sin(angle);
+                
+                // 旋转后的坐标
+                let rx = this.ox * ca - this.oz * sa;
+                let rz = this.ox * sa + this.oz * ca;
+                let ry = this.oy;
+                
+                // 心跳效果 (beat 范围 1.0 ~ 1.3 左右)
+                // 粒子会向外扩散
+                let scale = beat;
+                
+                // 加上心跳带来的位移
+                this.x = rx * scale * HEART_SIZE;
+                this.y = ry * scale * HEART_SIZE;
+                this.z = rz * scale * HEART_SIZE;
+                
+                // 简单的透视投影
+                // 假设摄像机在 z = -500 处
+                let fov = 300;
+                let perspective = fov / (fov + this.z + 50); // +50 防止太近
+                
+                this.screenX = width / 2 + this.x * perspective;
+                this.screenY = height / 2 + this.y * perspective;
+                this.screenScale = this.size * perspective;
+                this.alpha = 0.6 + 0.4 * Math.sin(this.flashState + time * 0.005);
+            }
+            
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.screenX, this.screenY, this.screenScale, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                particles.push(new Particle());
+            }
+        }
+        
+        // 动画循环
+        let startTime = Date.now();
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // 清空画布，带一点拖尾效果会更好看，但这里用全清空保持清晰
+            ctx.fillStyle = 'rgba(0, 0, 0, 1)';
+            ctx.fillRect(0, 0, width, height);
+            
+            let now = Date.now();
+            let time = now - startTime;
+            
+            // 心跳函数 (模拟真实心跳: 扑-通)
+            // 周期 1.2秒
+            let beatTime = time * 0.002;
+            let beat = 1 + 0.15 * Math.pow(Math.sin(beatTime), 60); // 主跳动
+            // 可以添加第二个小跳动，这里简化为一个平滑有力的跳动
+            
+            // 绘制粒子
+            particles.forEach(p => {
+                p.update(time, beat);
+                p.draw();
+            });
+        }
+        
+        window.addEventListener('resize', resize);
+        resize();
+        animate();
+        
+        // 音乐控制
+        const musicBtn = document.getElementById('musicBtn');
+        const bgMusic = document.getElementById('bgMusic');
+        let isPlaying = false;
+        
+        function toggleMusic() {
+            if (isPlaying) {
+                bgMusic.pause();
+                musicBtn.innerHTML = '🎵';
+                musicBtn.style.animation = 'none';
+            } else {
+                bgMusic.play().then(() => {
+                    musicBtn.innerHTML = '⏸';
+                    musicBtn.style.animation = 'spin 3s linear infinite';
+                }).catch(e => console.log("播放失败，可能需要用户交互", e));
+            }
+            isPlaying = !isPlaying;
+        }
+        
+        musicBtn.addEventListener('click', toggleMusic);
+        
+        // 页面点击也可以触发播放（为了自动播放策略）
+        document.body.addEventListener('click', function() {
+            if (!isPlaying) {
+                toggleMusic();
+            }
+        }, { once: true });
+        
+        // 添加旋转动画样式
+        const styleSheet = document.createElement("style");
+        styleSheet.innerText = `
+            @keyframes spin {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(styleSheet);
+        
+    </script>
+</body>
+</html>

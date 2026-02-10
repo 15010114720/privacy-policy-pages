@@ -352,6 +352,37 @@ function initPage() {
         floatingHeartsContainer.appendChild(h);
     }
 
+    // 彩蛋逻辑：点击中心爱心 5 次跳转
+    const heartContainer = document.querySelector('.heart-container');
+    let heartClickCount = 0;
+    let heartClickTimer = null;
+    
+    heartContainer.addEventListener('click', (e) => {
+        e.stopPropagation(); // 防止触发页面点击生成小爱心
+        heartClickCount++;
+        
+        // 每次点击增加一点反馈（比如震动或缩放），暗示这里有交互
+        const heart = heartContainer.querySelector('.heart');
+        heart.style.transform = `rotate(45deg) scale(${1 + heartClickCount * 0.1})`;
+        setTimeout(() => heart.style.transform = '', 100);
+        
+        if (heartClickCount >= 5) {
+            // 触发彩蛋
+            document.body.style.transition = 'opacity 1s ease';
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                window.location.href = 'love_3d.html';
+            }, 1000);
+            heartClickCount = 0;
+        }
+        
+        // 如果 2 秒内没有继续点击，重置计数
+        clearTimeout(heartClickTimer);
+        heartClickTimer = setTimeout(() => {
+            heartClickCount = 0;
+        }, 2000);
+    });
+
     // 卡片点击/触摸事件
     const cards = [document.getElementById('card1'),document.getElementById('card2')];
     cards.forEach(card=>{
