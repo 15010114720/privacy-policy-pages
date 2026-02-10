@@ -32,29 +32,29 @@ html {height:-webkit-fill-available;}
 .header {margin-bottom:25px; width:100%; position:relative; z-index:15;}
 .title {font-size:4rem; margin-bottom:15px; background:linear-gradient(90deg,#ff8a00,#e52e71,#9d50bb);
         -webkit-background-clip:text; background-clip:text; color:transparent;
-        text-shadow:0 0 20px rgba(229,46,113,0.5); animation:glow 3s ease-in-out infinite alternate;
+        text-shadow:0 0 20px rgba(229,46,113,0.5); animation:glow 5s ease-in-out infinite alternate;
         letter-spacing:1px; font-weight:800; line-height:1.2; font-family:'Ma Shan Zheng', cursive;
         word-break:keep-all; position:relative; z-index:20;}
 @keyframes glow {
-    from { text-shadow:0 0 15px rgba(229,46,113,0.5); }
-    to { text-shadow:0 0 25px rgba(229,46,113,0.8),0 0 35px rgba(157,80,187,0.6); }
+    from { text-shadow:0 0 15px rgba(229,46,113,0.4); filter: brightness(1); }
+    to { text-shadow:0 0 25px rgba(229,46,113,0.7),0 0 35px rgba(157,80,187,0.5); filter: brightness(1.1); }
 }
 .subtitle {font-size:1.8rem; color:#a8e6cf; margin-bottom:10px; opacity:0; animation:fadeInUp 1.5s ease forwards 0.5s;
           line-height:1.4; font-weight:300; position:relative; z-index:20;}
 
 /* 心形 */
 .heart-container {position:relative; margin:30px auto; width:220px; height:220px; display:flex; align-items:center; justify-content:center; touch-action:none; z-index:15;}
-.heart {position:absolute; background-color:#ff4757; width:110px; height:110px; transform:rotate(45deg); animation:heartbeat 1.2s infinite; box-shadow:0 0 40px #ff4757; will-change:transform;}
+.heart {position:absolute; background-color:#ff4757; width:110px; height:110px; transform:rotate(45deg); 
+        animation:breath 2.5s ease-in-out infinite; box-shadow:0 0 40px rgba(255, 71, 87, 0.6); will-change:transform, box-shadow;}
 .heart:before,.heart:after {content:""; position:absolute; width:110px; height:110px; background-color:#ff4757; border-radius:50%;}
 .heart:before {top:-55px; left:0;}
 .heart:after {top:0; left:-55px;}
-@keyframes heartbeat {
-    0% {transform:rotate(45deg) scale(1);}
-    5% {transform:rotate(45deg) scale(1.1);}
-    10% {transform:rotate(45deg) scale(1);}
-    15% {transform:rotate(45deg) scale(1.2);}
-    20% {transform:rotate(45deg) scale(1);}
-    100% {transform:rotate(45deg) scale(1);}
+
+/* 呼吸动画 - 替代原来的心跳 */
+@keyframes breath {
+    0% {transform:rotate(45deg) scale(1); box-shadow:0 0 30px rgba(255,71,87,0.5);}
+    50% {transform:rotate(45deg) scale(1.15); box-shadow:0 0 60px rgba(255,71,87,0.9);}
+    100% {transform:rotate(45deg) scale(1); box-shadow:0 0 30px rgba(255,71,87,0.5);}
 }
 .heart-text {position:absolute; font-size:2rem; font-weight:bold; color:white; z-index:2; text-shadow:0 0 8px rgba(0,0,0,0.8);
              font-family:'ZCOOL QingKe HuangYou', sans-serif;}
@@ -85,8 +85,16 @@ html {height:-webkit-fill-available;}
 
 /* 漂浮爱心 */
 .floating-hearts {position:fixed; width:100%; height:100%; top:0; left:0; pointer-events:none; z-index:2;}
-.floating-heart {position:absolute; color:#ff4757; font-size:18px; opacity:0; animation:floatUp 15s linear infinite; will-change:transform,opacity;}
-@keyframes floatUp {0%{transform:translateY(100vh) rotate(0deg); opacity:0;} 10%{opacity:1;} 90%{opacity:1;} 100%{transform:translateY(-100px) rotate(360deg); opacity:0;}}
+.floating-heart {position:absolute; color:#ff4757; font-size:18px; opacity:0; animation:floatUp 15s ease-in-out infinite; will-change:transform,opacity;}
+@keyframes floatUp {
+    0% {transform:translateY(100vh) translateX(0) rotate(0deg); opacity:0;}
+    10% {opacity:0.8;}
+    25% {transform:translateY(75vh) translateX(20px) rotate(45deg);}
+    50% {transform:translateY(50vh) translateX(-20px) rotate(90deg);}
+    75% {transform:translateY(25vh) translateX(10px) rotate(135deg);}
+    90% {opacity:0.6;}
+    100% {transform:translateY(-10vh) translateX(0) rotate(180deg); opacity:0;}
+}
 
 /* 返回顶部 */
 .back-to-top {position:fixed; bottom:20px; right:20px; width:50px; height:50px; background-color:rgba(229,46,113,0.8); border-radius:50%;
@@ -98,6 +106,101 @@ html {height:-webkit-fill-available;}
 .loading {position:fixed; top:0; left:0; width:100%; height:100%; background:linear-gradient(135deg,#0f0c29,#302b63,#24243e); display:flex; align-items:center; justify-content:center; z-index:9999; transition:opacity 0.5s ease;}
 .loading-spinner {width:60px; height:60px; border:5px solid rgba(255,255,255,0.3); border-radius:50%; border-top-color:#ff4757; animation:spin 1s ease-in-out infinite;}
 @keyframes spin {to{transform:rotate(360deg);}}
+
+/* 移动端适配 */
+@media screen and (max-width: 768px) {
+    .container { padding: 10px; }
+    .title { font-size: 2.8rem; margin-bottom: 10px; }
+    .subtitle { font-size: 1.2rem; }
+    
+    /* 缩小中间爱心 */
+    .heart-container { transform: scale(0.8); margin: 10px auto; }
+    
+    /* 计时器调整 */
+    /* .timer-container { margin: 15px 0; } 删除旧样式引用 */
+    /* #love-timer { font-size: 1.4rem !important; } 删除旧样式引用 */
+    
+    /* 卡片容器调整 */
+    .names-container { 
+        gap: 15px; 
+        margin: 20px 0; 
+        flex-direction: row; /* 强制横向排列，如果是小屏手机会自动换行吗？下面调整卡片大小使其能并排 */
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    /* 调整卡片大小以适应并排显示 (大多数手机宽约360-390px) */
+    .name-card { 
+        width: 155px; 
+        height: 200px; 
+    }
+    .name { font-size: 1.8rem; }
+    .name-icon { font-size: 2.8rem; }
+    
+    /* 消息框调整 */
+    .message { 
+        font-size: 1.1rem; 
+        padding: 20px; 
+        margin: 20px auto; 
+        line-height: 1.6;
+    }
+    
+    /* 粒子数量优化已经在JS中处理，这里处理一些间距 */
+    body { padding: 10px; }
+}
+
+/* 计时器样式优化 */
+.timer-box {
+    margin: 30px auto;
+    padding: 25px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    text-align: center;
+    font-family: 'ZCOOL QingKe HuangYou', cursive;
+    max-width: 90%;
+    width: 600px;
+    position: relative;
+    z-index: 15;
+    animation: fadeInUp 1.5s ease forwards 1s;
+    opacity: 0;
+}
+.timer-title {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    background: linear-gradient(to right, #ff8a00, #e52e71);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: 2px;
+}
+.timer-digits {
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 0 15px rgba(229, 46, 113, 0.6);
+    margin: 10px 0;
+    font-family: 'Ma Shan Zheng', cursive; /* 使用书法字体让数字更有韵味，或者换回无衬线体 */
+    letter-spacing: 1px;
+}
+.timer-footer {
+    color: #a8e6cf;
+    font-size: 1.1rem;
+    margin-top: 15px;
+    font-weight: 300;
+    letter-spacing: 3px;
+    opacity: 0.8;
+}
+
+@media screen and (max-width: 768px) {
+    .timer-box { padding: 15px; margin: 20px auto; }
+    .timer-title { font-size: 1.4rem; }
+    .timer-digits { font-size: 1.6rem; }
+    .timer-footer { font-size: 0.9rem; }
+}
 </style>
 </head>
 <body class="no-context-menu">
@@ -112,7 +215,7 @@ html {height:-webkit-fill-available;}
   
   <div class="heart-container">
     <div class="heart"></div>
-    <div class="heart-text">爱</div>
+    <div class="heart-text">L O V E</div>
   </div>
   
   <div class="names-container">
@@ -147,6 +250,14 @@ html {height:-webkit-fill-available;}
     </div>
   </div>
   
+  <div class="timer-box">
+    <div class="timer-title">我们结婚已经</div>
+    <div id="love-timer" class="timer-digits">
+        计算中...
+    </div>
+    <div class="timer-footer">每一秒都是幸福</div>
+  </div>
+  
   <div class="message">
     <p class="message-text">从遇见你的那一刻起，我的世界变得完整。<br>你的笑容如阳光般温暖，你的眼眸如星辰般璀璨。<br>黎江对蔡艳的爱，如山川般坚定，如流水般绵长。<br>愿这份爱意穿越时光，永远闪耀在你我心间。</p>
   </div>
@@ -158,6 +269,17 @@ html {height:-webkit-fill-available;}
 </div>
 
 <div class="back-to-top" id="backToTop"><i class="fas fa-chevron-up"></i></div>
+
+<div class="music-player" id="musicPlayer" style="position: fixed; bottom: 20px; left: 20px; z-index: 100;">
+    <button id="musicBtn" style="width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 2px solid #fff; color: white; font-size: 20px; cursor: pointer; outline: none; animation: rotate 5s linear infinite paused;">
+        <i class="fas fa-music"></i>
+    </button>
+    <audio id="bgMusic" loop>
+        <!-- 请替换为实际的音乐链接 -->
+        <source src="https://music.163.com/song/media/outer/url?id=1436709403.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+</div>
 
 <script>
 window.addEventListener('load', function() {
@@ -221,14 +343,22 @@ function initPage() {
         clickHeart.style.position='fixed';
         clickHeart.style.left=`${x}px`;
         clickHeart.style.top=`${y}px`;
-        clickHeart.style.color='#ff4757';
+        clickHeart.style.color=`hsl(${Math.random()*60+330}, 80%, 60%)`; // 随机一点粉红色调
         clickHeart.style.fontSize='25px';
         clickHeart.style.pointerEvents='none';
         clickHeart.style.zIndex='100';
         clickHeart.style.transform='translate(-50%,-50%)';
         clickHeart.style.opacity='1';
         document.body.appendChild(clickHeart);
-        const anim = clickHeart.animate([{transform:'translate(-50%,-50%) scale(1)',opacity:1},{transform:'translate(-50%,-120%) scale(1.4)',opacity:0}],{duration:1000,easing:'ease-out'});
+        
+        const randomX = (Math.random() - 0.5) * 50; // 随机左右飘动
+        const randomRotate = (Math.random() - 0.5) * 60; // 随机旋转
+
+        const anim = clickHeart.animate([
+            {transform:'translate(-50%,-50%) scale(1) rotate(0deg)', opacity:1},
+            {transform:`translate(calc(-50% + ${randomX}px), -100px) scale(1.5) rotate(${randomRotate}deg)`, opacity:0}
+        ],{duration:1200, easing:'cubic-bezier(0.25, 1, 0.5, 1)'}); // 更自然的缓动
+        
         anim.onfinish=()=>clickHeart.remove();
     }
 
@@ -236,6 +366,55 @@ function initPage() {
     const backToTopBtn=document.getElementById('backToTop');
     window.addEventListener('scroll',()=>{if(window.pageYOffset>300) backToTopBtn.classList.add('visible'); else backToTopBtn.classList.remove('visible');});
     backToTopBtn.addEventListener('click',()=>{window.scrollTo({top:0,behavior:'smooth'});});
+
+    // 计时器逻辑
+    const startDate = new Date('2012-10-03'); // 结婚纪念日
+    function updateTimer() {
+        const now = new Date();
+        const diff = now - startDate;
+        
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        document.getElementById('love-timer').innerHTML = 
+            `${days}天 ${hours}小时 ${minutes}分 ${seconds}秒`;
+    }
+    setInterval(updateTimer, 1000);
+    updateTimer();
+
+    // 音乐播放器逻辑
+    const musicBtn = document.getElementById('musicBtn');
+    const bgMusic = document.getElementById('bgMusic');
+    let isPlaying = false;
+
+    musicBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // 防止触发页面点击生成爱心
+        if (isPlaying) {
+            bgMusic.pause();
+            musicBtn.style.animationPlayState = 'paused';
+            musicBtn.innerHTML = '<i class="fas fa-music"></i>';
+        } else {
+            bgMusic.play().then(() => {
+                musicBtn.style.animationPlayState = 'running';
+                musicBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            }).catch(err => console.log('Playback failed:', err));
+        }
+        isPlaying = !isPlaying;
+    });
+
+    // 尝试自动播放（可能被浏览器拦截）
+    document.body.addEventListener('click', function firstClick() {
+        if (!isPlaying) {
+            bgMusic.play().then(() => {
+                isPlaying = true;
+                musicBtn.style.animationPlayState = 'running';
+                musicBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            }).catch(() => {});
+            document.body.removeEventListener('click', firstClick);
+        }
+    }, {once: true});
 }
 </script>
 </body>
