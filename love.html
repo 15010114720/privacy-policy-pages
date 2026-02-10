@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>黎江爱蔡艳 - 爱的宣言</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .container {
+            text-align: center;
+            padding: 30px;
+            max-width: 1200px;
+            z-index: 10;
+        }
+        
+        .header {
+            margin-bottom: 40px;
+        }
+        
+        .title {
+            font-size: 4.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #ff8a00, #e52e71, #9d50bb);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 30px rgba(229, 46, 113, 0.5);
+            animation: glow 3s ease-in-out infinite alternate;
+            letter-spacing: 2px;
+        }
+        
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 20px rgba(229, 46, 113, 0.5);
+            }
+            to {
+                text-shadow: 0 0 30px rgba(229, 46, 113, 0.8), 0 0 40px rgba(157, 80, 187, 0.6);
+            }
+        }
+        
+        .subtitle {
+            font-size: 1.8rem;
+            color: #a8e6cf;
+            margin-bottom: 10px;
+            opacity: 0;
+            animation: fadeInUp 1.5s ease forwards 0.5s;
+        }
+        
+        .heart-container {
+            position: relative;
+            margin: 40px auto;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .heart {
+            position: absolute;
+            background-color: #ff4757;
+            width: 150px;
+            height: 150px;
+            transform: rotate(45deg);
+            animation: heartbeat 1.2s infinite;
+            box-shadow: 0 0 50px #ff4757;
+        }
+        
+        .heart:before, .heart:after {
+            content: "";
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background-color: #ff4757;
+            border-radius: 50%;
+        }
+        
+        .heart:before {
+            top: -75px;
+            left: 0;
+        }
+        
+        .heart:after {
+            top: 0;
+            left: -75px;
+        }
+        
+        @keyframes heartbeat {
+            0% {
+                transform: rotate(45deg) scale(1);
+            }
+            5% {
+                transform: rotate(45deg) scale(1.1);
+            }
+            10% {
+                transform: rotate(45deg) scale(1);
+            }
+            15% {
+                transform: rotate(45deg) scale(1.2);
+            }
+            20% {
+                transform: rotate(45deg) scale(1);
+            }
+            100% {
+                transform: rotate(45deg) scale(1);
+            }
+        }
+        
+        .heart-text {
+            position: absolute;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: white;
+            z-index: 2;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+        }
+        
+        .names-container {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin: 50px 0;
+            flex-wrap: wrap;
+        }
+        
+        .name-card {
+            perspective: 1000px;
+            width: 250px;
+            height: 300px;
+        }
+        
+        .name-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        
+        .name-card:hover .name-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .name-card-front, .name-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .name-card-front {
+            background: linear-gradient(45deg, #3498db, #8e44ad);
+            color: white;
+        }
+        
+        .name-card-back {
+            background: linear-gradient(45deg, #e74c3c, #f1c40f);
+            color: white;
+            transform: rotateY(180deg);
+        }
+        
+        .name-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+        }
+        
+        .name {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        
+        .message {
+            font-size: 1.8rem;
+            line-height: 1.6;
+            margin: 40px auto;
+            max-width: 800px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            opacity: 0;
+            animation: fadeInUp 1.5s ease forwards 1.5s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .message:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: 0.5s;
+        }
+        
+        .message:hover:before {
+            left: 100%;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            font-size: 1.2rem;
+            color: #a8e6cf;
+            opacity: 0;
+            animation: fadeIn 2s ease forwards 2s;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .floating-hearts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .floating-heart {
+            position: absolute;
+            color: #ff4757;
+            font-size: 24px;
+            opacity: 0;
+            animation: floatUp 15s linear infinite;
+        }
+        
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 3rem;
+            }
+            
+            .names-container {
+                gap: 30px;
+            }
+            
+            .name-card {
+                width: 200px;
+                height: 250px;
+            }
+            
+            .name {
+                font-size: 2rem;
+            }
+            
+            .heart-container {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .heart, .heart:before, .heart:after {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .heart:before {
+                top: -60px;
+            }
+            
+            .heart:after {
+                left: -60px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .names-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .name-card {
+                width: 180px;
+                height: 220px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="floating-hearts" id="floatingHearts"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="title">黎江爱蔡艳</h1>
+            <p class="subtitle">一份永恒的爱意，一段美丽的缘分</p>
+        </div>
+        
+        <div class="heart-container">
+            <div class="heart"></div>
+            <div class="heart-text">爱</div>
+        </div>
+        
+        <div class="names-container">
+            <div class="name-card">
+                <div class="name-card-inner">
+                    <div class="name-card-front">
+                        <div class="name-icon">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="name">黎江</div>
+                        <p style="margin-top: 20px; font-size: 1.2rem;">爱的主语</p>
+                    </div>
+                    <div class="name-card-back">
+                        <div class="name-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="name">挚爱</div>
+                        <p style="margin-top: 20px; font-size: 1.2rem;">一生守护</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="name-card">
+                <div class="name-card-inner">
+                    <div class="name-card-front">
+                        <div class="name-icon">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="name">蔡艳</div>
+                        <p style="margin-top: 20px; font-size: 1.2rem;">爱的宾语</p>
+                    </div>
+                    <div class="name-card-back">
+                        <div class="name-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="name">被爱</div>
+                        <p style="margin-top: 20px; font-size: 1.2rem;">一生被珍视</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="message">
+            <p>从遇见你的那一刻起，我的世界变得完整。<br>
+            你的笑容如阳光般温暖，你的眼眸如星辰般璀璨。<br>
+            黎江对蔡艳的爱，如山川般坚定，如流水般绵长。<br>
+            愿这份爱意穿越时光，永远闪耀在你我心间。</p>
+        </div>
+        
+        <div class="footer">
+            <p>❤️ 永恒的爱 · 永恒的承诺 ❤️</p>
+            <p style="margin-top: 10px; font-size: 1rem;">Design with love for 黎江 & 蔡艳</p>
+        </div>
+    </div>
+    
+    <script>
+        // 创建粒子背景
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 100;
+        
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.style.position = 'absolute';
+            particle.style.width = `${Math.random() * 5 + 2}px`;
+            particle.style.height = particle.style.width;
+            particle.style.backgroundColor = `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.random() * 0.5 + 0.1})`;
+            particle.style.borderRadius = '50%';
+            particle.style.left = `${Math.random() * 100}vw`;
+            particle.style.top = `${Math.random() * 100}vh`;
+            particle.style.boxShadow = `0 0 10px rgba(255, 255, 255, 0.5)`;
+            
+            // 添加动画
+            const duration = Math.random() * 20 + 10;
+            const delay = Math.random() * 5;
+            particle.style.animation = `float ${duration}s linear ${delay}s infinite`;
+            
+            // 自定义浮动动画
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes float {
+                    0%, 100% {
+                        transform: translate(0, 0) rotate(0deg);
+                    }
+                    25% {
+                        transform: translate(${Math.random() * 50 - 25}px, ${Math.random() * 50 - 25}px) rotate(90deg);
+                    }
+                    50% {
+                        transform: translate(${Math.random() * 50 - 25}px, ${Math.random() * 50 - 25}px) rotate(180deg);
+                    }
+                    75% {
+                        transform: translate(${Math.random() * 50 - 25}px, ${Math.random() * 50 - 25}px) rotate(270deg);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            particlesContainer.appendChild(particle);
+        }
+        
+        // 创建漂浮的爱心
+        const floatingHeartsContainer = document.getElementById('floatingHearts');
+        const heartCount = 30;
+        
+        for (let i = 0; i < heartCount; i++) {
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            heart.innerHTML = '<i class="fas fa-heart"></i>';
+            heart.style.left = `${Math.random() * 100}vw`;
+            heart.style.animationDelay = `${Math.random() * 15}s`;
+            heart.style.fontSize = `${Math.random() * 20 + 15}px`;
+            heart.style.color = `hsl(${Math.random() * 360}, 100%, 70%)`;
+            
+            floatingHeartsContainer.appendChild(heart);
+        }
+        
+        // 添加交互效果：点击页面随机产生爱心
+        document.addEventListener('click', function(e) {
+            const clickHeart = document.createElement('div');
+            clickHeart.innerHTML = '<i class="fas fa-heart"></i>';
+            clickHeart.style.position = 'absolute';
+            clickHeart.style.left = `${e.clientX}px`;
+            clickHeart.style.top = `${e.clientY}px`;
+            clickHeart.style.color = '#ff4757';
+            clickHeart.style.fontSize = '30px';
+            clickHeart.style.pointerEvents = 'none';
+            clickHeart.style.zIndex = '100';
+            clickHeart.style.transform = 'translate(-50%, -50%)';
+            clickHeart.style.opacity = '1';
+            
+            document.body.appendChild(clickHeart);
+            
+            // 动画
+            const animation = clickHeart.animate([
+                { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+                { transform: 'translate(-50%, -150%) scale(1.5)', opacity: 0 }
+            ], {
+                duration: 1000,
+                easing: 'ease-out'
+            });
+            
+            animation.onfinish = () => {
+                clickHeart.remove();
+            };
+        });
+        
+        // 添加标题逐字显示效果
+        const title = document.querySelector('.title');
+        const originalText = title.textContent;
+        title.textContent = '';
+        
+        for (let i = 0; i < originalText.length; i++) {
+            const span = document.createElement('span');
+            span.textContent = originalText[i];
+            span.style.animation = `fadeInUp 0.5s ease forwards ${i * 0.1}s`;
+            span.style.opacity = '0';
+            span.style.display = 'inline-block';
+            title.appendChild(span);
+        }
+    </script>
+</body>
+</html>
