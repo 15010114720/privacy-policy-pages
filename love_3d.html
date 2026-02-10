@@ -71,6 +71,31 @@
             transform: rotate(180deg);
         }
 
+        /* 返回按钮 */
+        #backBtn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        #backBtn:hover {
+            background: rgba(255, 105, 180, 0.3);
+            transform: scale(1.1);
+        }
+
         @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap');
     </style>
 </head>
@@ -82,6 +107,7 @@
     </div>
 
     <button id="musicBtn" title="播放/暂停音乐">🎵</button>
+    <button id="backBtn" title="返回主页">🏠</button>
     
     <audio id="bgMusic" loop>
         <!-- 莫文蔚 - 这世界那么多人 -->
@@ -267,6 +293,16 @@
         }
         
         musicBtn.addEventListener('click', toggleMusic);
+        
+        // 返回按钮逻辑
+        const backBtn = document.getElementById('backBtn');
+        backBtn.addEventListener('click', () => {
+            document.body.style.transition = 'opacity 1s ease';
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                window.location.href = 'love.html';
+            }, 1000);
+        });
         
         // 页面点击也可以触发播放（为了自动播放策略）
         document.body.addEventListener('click', function() {
