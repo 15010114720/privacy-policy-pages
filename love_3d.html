@@ -109,9 +109,9 @@
     <button id="musicBtn" title="播放/暂停音乐">🎵</button>
     <button id="backBtn" title="返回主页">🏠</button>
     
+    <!-- 背景音乐 -->
     <audio id="bgMusic" loop>
-        <!-- 莫文蔚 - 这世界那么多人 -->
-        <source src="https://music.163.com/song/media/outer/url?id=1842025914.mp3" type="audio/mpeg">
+        <source src="https://music.163.com/song/media/outer/url?id=1383023012.mp3" type="audio/mpeg">
     </audio>
 
     <canvas id="heartCanvas"></canvas>
@@ -304,23 +304,37 @@
             }, 1000);
         });
         
-        // 页面点击也可以触发播放（为了自动播放策略）
+        // 自动播放策略
+        function tryAutoPlay() {
+            if (!isPlaying) {
+                bgMusic.play().then(() => {
+                    isPlaying = true;
+                    musicBtn.innerHTML = '⏸';
+                    musicBtn.style.animation = 'spin 3s linear infinite';
+                    // 播放成功，移除监听
+                    document.removeEventListener('click', tryAutoPlay);
+                    document.removeEventListener('touchstart', tryAutoPlay);
+                }).catch(e => {
+                    console.log("等待用户交互以播放音乐");
+                });
+            }
+        }
+        
+        // 监听点击和触摸
+        document.addEventListener('click', tryAutoPlay);
+        document.addEventListener('touchstart', tryAutoPlay);
+        
+        // 页面加载后尝试一次
+        setTimeout(tryAutoPlay, 500);
+TML = '⏸';
+                    musicBtn.style.animation = 'spin 3s linear infinite';
+                    //         // 页面点击也可以触发播放（为了自动播放策略）
         document.body.addEventListener('click', function() {
             if (!isPlaying) {
                 toggleMusic();
             }
         }, { once: true });
-        
-        // 添加旋转动画样式
-        const styleSheet = document.createElement("style");
-        styleSheet.innerText = `
-            @keyframes spin {
-                from { transform: rotate(0deg); }
-                to { transform: rotate(360deg); }
-            }
-        `;
-        document.head.appendChild(styleSheet);
-        
+    
     </script>
 </body>
 </html>

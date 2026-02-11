@@ -302,8 +302,8 @@ html {height:-webkit-fill-available;}
         <i class="fas fa-music"></i>
     </button>
     <audio id="bgMusic" loop>
-        <!-- 莫文蔚 - 这世界那么多人 -->
-        <source src="https://music.163.com/song/media/outer/url?id=1842025914.mp3" type="audio/mpeg">
+        <!-- 背景音乐 -->
+        <source src="https://music.163.com/song/media/outer/url?id=1383023012.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 </div>
@@ -462,17 +462,34 @@ function initPage() {
         isPlaying = !isPlaying;
     });
 
-    // 尝试自动播放（可能被浏览器拦截）
-    document.body.addEventListener('click', function firstClick() {
+    // 尝试自动播放（更激进的策略）
+    // 现代浏览器通常禁止无声自动播放，所以我们需要捕捉任何用户交互
+    const autoPlayMusic = () => {
         if (!isPlaying) {
             bgMusic.play().then(() => {
                 isPlaying = true;
                 musicBtn.style.animationPlayState = 'running';
                 musicBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            }).catch(() => {});
-            document.body.removeEventListener('click', firstClick);
+                // 播放成功后移除监听器
+                document.removeEventListener('click', autoPlayMusic);
+                document.removeEventListener('touchstart', autoPlayMusic);
+                document.removeEventListener('scroll', autoPlayMusic);
+                document.removeEventListener('keydown', autoPlayMusic);
+            }).catch(() => {
+                // 失败了也没关系，等待下一次交互
+                console.log('Autoplay waiting for interaction...');
+            });
         }
-    }, {once: true});
+    };
+
+    // 监听各种可能的用户交互事件
+    document.addEventListener('click', autoPlayMusic);
+    document.addEventListener('touchstart', autoPlayMusic);
+    document.addEventListener('scroll', autoPlayMusic);
+    document.addEventListener('keydown', autoPlayMusic);
+    
+    // 页面加载完成后尝试一次（针对部分旧浏览器或已授权域）
+    setTimeout(autoPlayMusic, 1000);
 }
 </script>
 </body>
